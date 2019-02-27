@@ -17,7 +17,7 @@ app.get("/", (req, res) => res.send("ehllo"));
 
 // use routes
 app.use("/api/users", users),
-  app.use("/api/users", posts),
+  app.use("/api/posts", posts),
   app.use("/api/profile", profile);
 
 const port = process.env.PORT || 5000;
