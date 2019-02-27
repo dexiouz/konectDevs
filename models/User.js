@@ -20,10 +20,9 @@ const UserSchema = new Schema({
 
   avatar: {
     type: String,
-    required: true
   },
 
-  avatar: {
+  date: {
     type: Date,
     default: Date.now
   }
