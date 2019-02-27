@@ -4,6 +4,7 @@ const express = require("express"),
   jwt = require("jsonwebtoken"),
   keys = require("../../config/keys"),
   router = express.Router(),
+  passport = require("passport"),
   User = require("../../models/User");
 
 // @route GET api/users/test
@@ -49,7 +50,7 @@ router.post("/register", (req, res) => {
 });
 
 // @route POST api/users/register
-// @desc lOGIN user
+// @desc lOGIN user/ Returning Jwt Token
 // @access public
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
@@ -73,7 +74,7 @@ router.post("/login", (req, res) => {
         //sign token
         jwt.sign(
           payload,
-          keys.SecretOrKey,
+          keys.secretOrKey,
           { expiresIn: 3600 },
           (err, token) => {
             res.json({
@@ -90,5 +91,16 @@ router.post("/login", (req, res) => {
     });
   });
 });
+
+// @route GET api/users/CURRENT
+// @desc Get current user
+// @access private
+router.get(
+  "/current",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    res.json(req.user);
+  }
+);
 
 module.exports = router;
