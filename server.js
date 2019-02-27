@@ -4,6 +4,7 @@ const express = require("express"),
 (users = require("./routes/api/users")),
   (posts = require("./routes/api/posts")),
   (profile = require("./routes/api/profile"));
+
 // DB CONFIG
 const db = require("./config/keys").mongoURI;
 
