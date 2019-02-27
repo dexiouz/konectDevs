@@ -1,5 +1,3 @@
-import { access } from "fs";
-
 const express = require("express"),
   router = express.Router();
 
