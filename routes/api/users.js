@@ -6,7 +6,7 @@ const express = require("express"),
   router = express.Router(),
   passport = require("passport"),
   //Load Input validation
-  validateRegisterInput = require('../../validation/register'),
+  validateRegisterInput = require("../../validation/register"),
   //Load user model
   User = require("../../models/User");
 
@@ -19,19 +19,20 @@ router.get("/test", (req, res) => res.json({ msg: "users works" }));
 // @desc register user
 // @access public
 router.post("/register", (req, res) => {
+  const { errors, isValid } = validateRegisterInput(req.body);
+  
+  // //Check validtion
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  
   //destructure user details
   const { name, email, password } = req.body;
 
-  // const { errors, isValid } = validateRegisterInput(req.body);
-
-  // //Check validtion
-  // if(!isValid) {
-  //   return res.status(400).json(errors);
-  // }
-
   User.findOne({ email }).then(user => {
-    if (user) {
-      return res.status(400).json({ email: "Email already exists." });
+    if(user) {
+      errors.email = 'Someone has registered with that email'
+      return res.status(400).json(errors);
     } else {
       const avatar = gravatar.url(email, {
         s: "200", //size
