@@ -7,6 +7,7 @@ const express = require("express"),
   passport = require("passport"),
   //Load Input validation
   validateRegisterInput = require("../../validation/register"),
+  validateLoginInput = require("../../validation/login"),
   //Load user model
   User = require("../../models/User");
 
@@ -65,15 +66,26 @@ router.post("/register", (req, res) => {
 // @desc lOGIN user/ Returning Jwt Token
 // @access public
 router.post("/login", (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body);
+  
+  // //Check validtion
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  
+
+
+  // destructure details
   const { email, password } = req.body;
 
   // Find user with this email
   User.findOne({ email }).then(user => {
     // check if the email has registere
     if (!user) {
+      errors.email = 'Ooops!, we couldn\'t find this user'
       return res
         .status(404)
-        .json({ email: "Ooops!, we couldn't find this user" });
+        .json(errors);
     }
 
     //Check if password match hashed password
@@ -96,9 +108,10 @@ router.post("/login", (req, res) => {
           }
         );
       } else {
+        errors.password = "Ouch!!, your passwords do not match"
         return res
           .status(400)
-          .json({ password: "Ouch!!, your passwords do not match" });
+          .json(errors);
       }
     });
   });
