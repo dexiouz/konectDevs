@@ -5,6 +5,9 @@ const express = require("express"),
   keys = require("../../config/keys"),
   router = express.Router(),
   passport = require("passport"),
+  //Load Input validation
+  validateRegisterInput = require('../../validation/register'),
+  //Load user model
   User = require("../../models/User");
 
 // @route GET api/users/test
@@ -18,6 +21,14 @@ router.get("/test", (req, res) => res.json({ msg: "users works" }));
 router.post("/register", (req, res) => {
   //destructure user details
   const { name, email, password } = req.body;
+
+  // const { errors, isValid } = validateRegisterInput(req.body);
+
+  // //Check validtion
+  // if(!isValid) {
+  //   return res.status(400).json(errors);
+  // }
+
   User.findOne({ email }).then(user => {
     if (user) {
       return res.status(400).json({ email: "Email already exists." });
