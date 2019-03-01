@@ -1,4 +1,5 @@
-const mongoose = require("mongoose"),
+const 
+  mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 
 // create User Schema
