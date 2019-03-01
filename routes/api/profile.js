@@ -5,7 +5,9 @@ const express = require("express"),
   // Load profile model
   Profile = require("../../models/Profile"),
   // Load profile model
-  User = require("../../models/User");
+  User = require("../../models/User"),
+  // Load validation
+  validateProfileInput = require("../../validation/profile");
 
 // @route GET api/profiles/test
 // @desc Test profiles route
@@ -40,6 +42,13 @@ router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    const { errors, isValid } = validateProfileInput(req.body);
+
+    //check validation
+    if (!isValid) {
+      // Return a 400 status if there is any error
+      return res.status(400).json(errors);
+    }
     //  Get fields
     const profileFields = {};
 
@@ -69,11 +78,11 @@ router.post(
     Profile.findOne({ user: req.user.id }).then(profile => {
       if (profile) {
         // update user profile
-        Profile.findByIdAndUpdate(
+        Profile.findOneAndUpdate(
           { user: req.user.id },
           { $set: profileFields },
           { new: true }
-        ).then(profile => res.json(profile));
+        ).then(profile => res.json(profile)).catch(err => res.json(err));
       } else {
         // create user profile
         Profile.findOne({ handle: profileFields.handle }).then(profile => {
