@@ -24,6 +24,7 @@ router.get(
     const errors = {};
 
     Profile.findOne({ user: req.user.id })
+      .populate("user", ["name", "avatar"])
       .then(profile => {
         if (!profile) {
           (errors.noproflie = "This user has no profile"),
@@ -82,7 +83,9 @@ router.post(
           { user: req.user.id },
           { $set: profileFields },
           { new: true }
-        ).then(profile => res.json(profile)).catch(err => res.json(err));
+        )
+          .then(profile => res.json(profile))
+          .catch(err => res.json(err));
       } else {
         // create user profile
         Profile.findOne({ handle: profileFields.handle }).then(profile => {
